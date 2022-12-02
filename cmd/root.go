@@ -32,7 +32,6 @@ var rootCmd = &cobra.Command{
 	},
 }
 
-// go run main.go exampleCodeBlock.js 0 13
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Fprintf(os.Stderr, "error using xpln: '%s'", err)
