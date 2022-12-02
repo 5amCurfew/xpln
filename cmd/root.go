@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/5amCurfew/xpln/pkg/xpln"
+	xpln "github.com/5amCurfew/xpln/pkg"
 	"github.com/spf13/cobra"
 )
 

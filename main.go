@@ -1,6 +1,6 @@
 package main
 
-import "github.com/5amCurfew/xpln/cmd/xpln"
+import xpln "github.com/5amCurfew/xpln/cmd"
 
 func main() {
 	xpln.Execute()
