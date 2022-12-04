@@ -1,56 +1,47 @@
 package xpln
 
 import (
-	"fmt"
-	"io/ioutil"
+	"context"
 	"log"
 	"os"
-	"strconv"
-	"strings"
+
+	util "github.com/5amCurfew/xpln/util"
+	"github.com/PullRequestInc/go-gpt3"
+	"github.com/joho/godotenv"
 )
 
-func ReadCodeBlock(file, start, end string) string {
+// ///////////////////////////////////////////
+// Read Code Block from file
+// ///////////////////////////////////////////
+func CreateCodeBlock(file, start, end string) util.CodeBlock {
+	return util.NewCodeBlock(file, start, end)
+}
 
-	content, err := os.Open(file)
+// ///////////////////////////////////////////
+// Parse Code Block to OpenAI API
+// ///////////////////////////////////////////
+func ExplainCodeBlock(block util.CodeBlock) string {
+	godotenv.Load()
+
+	openAPIKey := os.Getenv("OPENAI_API_KEY")
+	ctx := context.Background()
+	client := gpt3.NewClient(openAPIKey)
+
+	var prefix = block.GetComment() + " " + block.GetLang() + "\n" + block.GetComment() + " Code Block\n"
+	var suffix = "\n" + block.GetComment() + " Here's what the Code-Block is doing:\n" + block.GetComment() + " 1."
+	prompt := prefix + block.GetCode() + suffix
+
+	resp, err := client.Completion(ctx, gpt3.CompletionRequest{
+		Prompt:      []string{prompt},
+		MaxTokens:   gpt3.IntPtr(128),
+		Stop:        []string{"\n\n"},
+		TopP:        gpt3.Float32Ptr(1),
+		Temperature: gpt3.Float32Ptr(0.25),
+	})
 
 	if err != nil {
-		log.Fatal("Error: Could not find file")
+		log.Fatalln(err)
 	}
 
-	defer content.Close()
-
-	raw, err := ioutil.ReadAll(content)
-
-	var lines = strings.Split(string(raw), "\n")
-
-	var s, startNotProvided = strconv.Atoi(start)
-	if startNotProvided != nil {
-		fmt.Println("Starting line not provided: Defaulting to line 1")
-		s = 0
-	} else if s > len(lines)-1 {
-		fmt.Println("Starting line is greater than file length: Defaulting to line 1")
-		s = 0
-	}
-
-	var e, endNotProvided = strconv.Atoi(end)
-	if endNotProvided != nil {
-		fmt.Println("Ending line not provided: Defaulting to end of file")
-		e = len(lines) - 1
-	} else if e < s {
-		fmt.Println("Ending line is greater than starting line: Defaulting to end of file")
-		e = len(lines) - 1
-	} else if e > len(lines)-1 {
-		fmt.Println("Ending line is greater than file length: Defaulting to end of file")
-		e = len(lines) - 1
-	}
-
-	// Selected lines
-	var selected string
-	for i := s; i <= e; i++ {
-		if i >= s && i <= e {
-			selected += string(lines[i]) + "\n"
-		}
-	}
-
-	return (string(selected))
+	return string(block.GetComment() + " 1." + resp.Choices[0].Text)
 }

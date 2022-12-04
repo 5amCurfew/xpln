@@ -28,8 +28,9 @@ var rootCmd = &cobra.Command{
 			end = strings.Split(lineRange, "-")[1]
 		}
 
-		var block = xpln.ReadCodeBlock(file, start, end)
-		fmt.Println(block)
+		var block = xpln.CreateCodeBlock(file, start, end)
+		var explained = xpln.ExplainCodeBlock(block)
+		fmt.Println(explained)
 	},
 }
 
