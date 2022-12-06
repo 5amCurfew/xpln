@@ -113,8 +113,8 @@ func (c CodeBlock) FormatBlock() string {
 
 	var formatted string
 	for i := 0; i < len(lines); i++ {
-		if len(lines[i]) > 25 {
-			formatted += string(lines[i][:25]) + "...\n"
+		if len(lines[i]) > 200 {
+			formatted += string(lines[i][:200]) + "...\n"
 		} else {
 			formatted += string(lines[i]) + "\n"
 		}
