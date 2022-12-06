@@ -26,14 +26,23 @@ func NewCodeBlock(f, s, e string) CodeBlock {
 }
 
 func determineLang(file string) string {
-	return "Javascript"
+	switch strings.Split(file, ".")[1] {
+	case "py":
+		return "Python"
+	case "js":
+		return "Javascript"
+	case "R":
+		return "R Programming"
+	default:
+		return "Go"
+	}
 }
 
 func determineComment(file string) string {
-	var extension = strings.Split(file, ".")[1]
-
-	switch extension {
+	switch strings.Split(file, ".")[1] {
 	case "py":
+		return "#"
+	case "R":
 		return "#"
 	default:
 		return "//"
