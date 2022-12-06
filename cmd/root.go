@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	xpln "github.com/5amCurfew/xpln/pkg"
+	"github.com/pterm/pterm"
 	"github.com/spf13/cobra"
 )
 
@@ -30,7 +31,15 @@ var rootCmd = &cobra.Command{
 
 		var block = xpln.CreateCodeBlock(file, start, end)
 		var explained = xpln.ExplainCodeBlock(block)
-		fmt.Println(explained)
+
+		panel1 := pterm.DefaultBox.WithTitle("Code Block").Sprint(block.FormatBlock())
+		panel2 := pterm.DefaultBox.WithTitle("Explained").Sprint(explained)
+
+		panels, _ := pterm.DefaultPanel.WithPanels(pterm.Panels{
+			{{Data: panel1}, {Data: panel2}},
+		}).Srender()
+
+		pterm.DefaultBox.WithTitle("xpln").WithRightPadding(0).WithBottomPadding(0).WithTopPadding(1).Println(panels)
 	},
 }
 

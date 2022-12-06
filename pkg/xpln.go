@@ -36,7 +36,7 @@ func ExplainCodeBlock(block util.CodeBlock) string {
 		MaxTokens:   gpt3.IntPtr(128),
 		Stop:        []string{"\n\n"},
 		TopP:        gpt3.Float32Ptr(1),
-		Temperature: gpt3.Float32Ptr(0.25),
+		Temperature: gpt3.Float32Ptr(0.20),
 	})
 
 	if err != nil {
