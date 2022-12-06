@@ -106,3 +106,19 @@ func (c CodeBlock) GetComment() string {
 func (c CodeBlock) GetCode() string {
 	return c.code
 }
+
+func (c CodeBlock) FormatBlock() string {
+
+	var lines = strings.Split(string(c.code), "\n")
+
+	var formatted string
+	for i := 0; i < len(lines); i++ {
+		if len(lines[i]) > 25 {
+			formatted += string(lines[i][:25]) + "...\n"
+		} else {
+			formatted += string(lines[i]) + "\n"
+		}
+	}
+
+	return formatted
+}
