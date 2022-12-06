@@ -33,10 +33,10 @@ func ExplainCodeBlock(block util.CodeBlock) string {
 
 	resp, err := client.Completion(ctx, gpt3.CompletionRequest{
 		Prompt:      []string{prompt},
-		MaxTokens:   gpt3.IntPtr(128),
+		MaxTokens:   gpt3.IntPtr(256),
 		Stop:        []string{"\n\n"},
 		TopP:        gpt3.Float32Ptr(1),
-		Temperature: gpt3.Float32Ptr(0.20),
+		Temperature: gpt3.Float32Ptr(0.25),
 	})
 
 	if err != nil {
