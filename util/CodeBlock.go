@@ -65,7 +65,6 @@ func readFile(file, start, end string) string {
 
 	var s, startNotProvided = strconv.Atoi(start)
 	if startNotProvided != nil {
-		fmt.Println("Starting line not provided: Defaulting to line 1")
 		s = 0
 	} else if s > len(lines)-1 {
 		fmt.Println("Starting line is greater than file length: Defaulting to line 1")
@@ -74,7 +73,6 @@ func readFile(file, start, end string) string {
 
 	var e, endNotProvided = strconv.Atoi(end)
 	if endNotProvided != nil {
-		fmt.Println("Ending line not provided: Defaulting to end of file")
 		e = len(lines) - 1
 	} else if e < s {
 		fmt.Println("Ending line is greater than starting line: Defaulting to end of file")

@@ -32,7 +32,6 @@ var rootCmd = &cobra.Command{
 		var block = xpln.CreateCodeBlock(file, start, end)
 		var explained = xpln.ExplainCodeBlock(block)
 
-		fmt.Println(pterm.GetTerminalSize())
 		panel1 := pterm.DefaultBox.WithTitle("Code Block").Sprint(block.FormatBlock())
 		panel2 := pterm.DefaultBox.WithTitle("Explained").Sprint(explained)
 
