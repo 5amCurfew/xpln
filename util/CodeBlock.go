@@ -108,11 +108,16 @@ func (c CodeBlock) GetCode() string {
 func (c CodeBlock) FormatBlock() string {
 
 	var lines = strings.Split(string(c.code), "\n")
+	const maxOutput = 25
 
 	var formatted string
-	for i := 0; i < len(lines); i++ {
-		if len(lines[i]) > 200 {
-			formatted += string(lines[i][:200]) + "...\n"
+	for i := 0; i < len(lines) && i <= maxOutput; i++ {
+		if i == maxOutput {
+			formatted += "..."
+			break
+		}
+		if len(lines[i]) > 40 {
+			formatted += string(lines[i][:40]) + "...\n"
 		} else {
 			formatted += string(lines[i]) + "\n"
 		}

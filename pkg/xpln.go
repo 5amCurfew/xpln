@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"os"
+	"strings"
 
 	util "github.com/5amCurfew/xpln/util"
 	"github.com/PullRequestInc/go-gpt3"
@@ -27,21 +28,21 @@ func ExplainCodeBlock(block util.CodeBlock) string {
 	ctx := context.Background()
 	client := gpt3.NewClient(openAPIKey)
 
-	var prefix = block.GetComment() + " " + block.GetLang() + "\n" + block.GetComment() + " Code Block\n"
-	var suffix = "\n" + block.GetComment() + " Here's what the Code-Block is doing:\n" + block.GetComment() + " 1."
+	var prefix = block.GetComment() + " " + block.GetLang() + " application\n"
+	var suffix = "\n" + block.GetComment() + " Explain what the the application is doing:\n" + block.GetComment() + " 1."
 	prompt := prefix + block.GetCode() + suffix
 
 	resp, err := client.Completion(ctx, gpt3.CompletionRequest{
-		Prompt:      []string{prompt},
-		MaxTokens:   gpt3.IntPtr(256),
-		Stop:        []string{"\n\n"},
-		TopP:        gpt3.Float32Ptr(1),
-		Temperature: gpt3.Float32Ptr(0.25),
+		Prompt:           []string{prompt},
+		MaxTokens:        gpt3.IntPtr(128),
+		Stop:             []string{"\n\n"},
+		TopP:             gpt3.Float32Ptr(0.05),
+		FrequencyPenalty: 0.8,
 	})
 
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	return string(block.GetComment() + " 1." + resp.Choices[0].Text)
+	return strings.Replace(string(block.GetComment()+" 1."+resp.Choices[0].Text), block.GetComment()+" ", "", -1)
 }
