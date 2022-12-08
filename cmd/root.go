@@ -37,20 +37,32 @@ var rootCmd = &cobra.Command{
 				Text:  "✓",
 			},
 		}
+		spinner.FailPrinter = &pterm.PrefixPrinter{
+			MessageStyle: &pterm.Style{pterm.BgBlack, pterm.FgCyan},
+			Prefix: pterm.Prefix{
+				Style: &pterm.Style{pterm.BgBlack, pterm.FgLightRed},
+				Text:  "x",
+			},
+		}
 
-		var block = xpln.CreateCodeBlock(file, start, end)
-		var explained = xpln.ExplainCodeBlock(block)
+		var block, err = xpln.CreateCodeBlock(file, start, end)
+		if err != nil {
+			spinner.Fail("Failed xpln'ing! (" + err.Error() + ")")
+			os.Exit(1)
+		} else {
+			var explained = xpln.ExplainCodeBlock(block)
 
-		panel1 := pterm.DefaultBox.WithTitle(pterm.LightWhite("Code Block")).Sprint(pterm.LightWhite(block.FormatBlock()))
-		panel2 := pterm.DefaultBox.WithTitle(pterm.Cyan("Explained")).Sprint(pterm.Cyan(explained))
+			panel1 := pterm.DefaultBox.WithTitle(pterm.LightWhite("Code Block")).Sprint(pterm.LightWhite(block.FormatBlock()))
+			panel2 := pterm.DefaultBox.WithTitle(pterm.Cyan("Explained")).Sprint(pterm.Cyan(explained))
 
-		panels, _ := pterm.DefaultPanel.WithPanels(pterm.Panels{
-			{{Data: panel1}, {Data: panel2}},
-		}).Srender()
+			panels, _ := pterm.DefaultPanel.WithPanels(pterm.Panels{
+				{{Data: panel1}, {Data: panel2}},
+			}).Srender()
 
-		spinner.Success("Xpln'd!")
+			spinner.Success("Xpln'd!")
 
-		pterm.DefaultBox.WithTitle(pterm.LightWhite("xpln")).Println(panels)
+			pterm.DefaultBox.WithTitle(pterm.LightWhite("xpln")).Println(panels)
+		}
 	},
 }
 

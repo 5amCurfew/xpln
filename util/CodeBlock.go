@@ -3,7 +3,6 @@ package xpln
 import (
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 	"strconv"
 	"strings"
@@ -16,13 +15,19 @@ type CodeBlock struct {
 	code    string
 }
 
-func NewCodeBlock(f, s, e string) CodeBlock {
+func NewCodeBlock(f, s, e string) (CodeBlock, error) {
+	_, err := os.Open(f)
+
+	if err != nil {
+		return CodeBlock{}, err
+	}
+
 	return CodeBlock{
 		file:    f,
 		lang:    determineLang(f),
 		comment: determineComment(f),
 		code:    readFile(f, s, e),
-	}
+	}, nil
 }
 
 func determineLang(file string) string {
@@ -51,15 +56,11 @@ func determineComment(file string) string {
 
 func readFile(file, start, end string) string {
 
-	content, err := os.Open(file)
-
-	if err != nil {
-		log.Fatal("Error: Could not find file")
-	}
+	content, _ := os.Open(file)
 
 	defer content.Close()
 
-	raw, err := ioutil.ReadAll(content)
+	raw, _ := ioutil.ReadAll(content)
 
 	var lines = strings.Split(string(raw), "\n")
 

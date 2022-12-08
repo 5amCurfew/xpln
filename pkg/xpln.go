@@ -14,7 +14,7 @@ import (
 // ///////////////////////////////////////////
 // Read Code Block from file
 // ///////////////////////////////////////////
-func CreateCodeBlock(file, start, end string) util.CodeBlock {
+func CreateCodeBlock(file, start, end string) (util.CodeBlock, error) {
 	return util.NewCodeBlock(file, start, end)
 }
 
