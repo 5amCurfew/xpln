@@ -50,7 +50,12 @@ var rootCmd = &cobra.Command{
 			spinner.Fail("Failed xpln'ing! (" + err.Error() + ")")
 			os.Exit(1)
 		} else {
-			var explained = xpln.ExplainCodeBlock(block)
+			var explained, err = xpln.ExplainCodeBlock(block)
+
+			if err != nil {
+				spinner.Fail("Failed xpln'ing! (" + err.Error() + ")")
+				os.Exit(1)
+			}
 
 			panel1 := pterm.DefaultBox.WithTitle(pterm.LightWhite("Code Block")).Sprint(pterm.LightWhite(block.FormatBlock()))
 			panel2 := pterm.DefaultBox.WithTitle(pterm.Cyan("Explained")).Sprint(pterm.Cyan(explained))

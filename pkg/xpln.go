@@ -2,7 +2,6 @@ package xpln
 
 import (
 	"context"
-	"log"
 	"os"
 	"strings"
 
@@ -21,7 +20,7 @@ func CreateCodeBlock(file, start, end string) (util.CodeBlock, error) {
 // ///////////////////////////////////////////
 // Parse Code Block to OpenAI API
 // ///////////////////////////////////////////
-func ExplainCodeBlock(block util.CodeBlock) string {
+func ExplainCodeBlock(block util.CodeBlock) (string, error) {
 	godotenv.Load()
 
 	openAPIKey := os.Getenv("OPENAI_API_KEY")
@@ -41,8 +40,8 @@ func ExplainCodeBlock(block util.CodeBlock) string {
 	})
 
 	if err != nil {
-		log.Fatalln(err)
+		return "GPT-3 Completion Error", err
 	}
 
-	return strings.Replace(string(block.GetComment()+" 1."+resp.Choices[0].Text), block.GetComment()+" ", "", -1)
+	return strings.Replace(string(block.GetComment()+" 1."+resp.Choices[0].Text), block.GetComment()+" ", "", -1), nil
 }
