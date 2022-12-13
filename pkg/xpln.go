@@ -39,7 +39,7 @@ func ExplainCodeBlock(cb util.CodeBlock) (string, error) {
 	client := gpt3.NewClient(openAPIKey)
 
 	var prefix = cb.Comment + " " + cb.Lang + " application\n"
-	var suffix = "\n" + cb.Comment + " Explain what the the application is doing:\n" + cb.Comment + " 1."
+	var suffix = "\n" + cb.Comment + " Explain what the application is doing:\n" + cb.Comment + " 1."
 	prompt := prefix + cb.Block + suffix
 
 	resp, err := client.Completion(ctx, gpt3.CompletionRequest{
