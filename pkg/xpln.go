@@ -8,6 +8,7 @@ import (
 	util "github.com/5amCurfew/xpln/util"
 	"github.com/PullRequestInc/go-gpt3"
 	"github.com/joho/godotenv"
+	"github.com/mitchellh/go-wordwrap"
 )
 
 // ///////////////////////////////////////////
@@ -55,4 +56,8 @@ func ExplainCodeBlock(cb util.CodeBlock) (string, error) {
 	}
 
 	return strings.Replace(string(cb.Comment+" 1."+resp.Choices[0].Text), cb.Comment+" ", "", -1), nil
+}
+
+func FormatExplained(e string, w int) string {
+	return wordwrap.WrapString(e, uint(w))
 }

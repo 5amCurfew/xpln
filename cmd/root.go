@@ -22,6 +22,7 @@ var rootCmd = &cobra.Command{
 		var file = args[0]
 		var start, end string
 		lineRange, _ := cmd.Flags().GetString("lines")
+		outputWidth := int(pterm.GetTerminalWidth() / 3)
 
 		// Check for lines flag provided
 		if lineRange != "" {
@@ -57,8 +58,10 @@ var rootCmd = &cobra.Command{
 				os.Exit(1)
 			}
 
-			panel1 := pterm.DefaultBox.WithTitle(pterm.LightWhite("Code Block")).Sprint(pterm.LightWhite(block.FormatBlockOutput(45)))
-			panel2 := pterm.DefaultBox.WithTitle(pterm.Cyan("Explained")).Sprint(pterm.Cyan(explained))
+			panel1 := pterm.DefaultBox.WithTitle(
+				pterm.LightWhite("Code Block")).Sprint(pterm.LightWhite(block.FormatBlockOutput(outputWidth)))
+			panel2 := pterm.DefaultBox.WithTitle(
+				pterm.Cyan("Explained")).Sprint(pterm.Cyan(xpln.FormatExplained(explained, outputWidth)))
 
 			panels, _ := pterm.DefaultPanel.WithPanels(pterm.Panels{
 				{{Data: panel1}, {Data: panel2}},
