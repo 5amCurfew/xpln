@@ -9,28 +9,13 @@ import (
 )
 
 type CodeBlock struct {
-	file    string
-	lang    string
-	comment string
-	code    string
+	File    string
+	Lang    string
+	Comment string
+	Block   string
 }
 
-func NewCodeBlock(f, s, e string) (CodeBlock, error) {
-	_, err := os.Open(f)
-
-	if err != nil {
-		return CodeBlock{}, err
-	}
-
-	return CodeBlock{
-		file:    f,
-		lang:    determineLang(f),
-		comment: determineComment(f),
-		code:    readFile(f, s, e),
-	}, nil
-}
-
-func determineLang(file string) string {
+func DetermineLang(file string) string {
 	switch strings.Split(file, ".")[1] {
 	case "py":
 		return "Python"
@@ -43,7 +28,7 @@ func determineLang(file string) string {
 	}
 }
 
-func determineComment(file string) string {
+func DetermineComment(file string) string {
 	switch strings.Split(file, ".")[1] {
 	case "py":
 		return "#"
@@ -54,7 +39,7 @@ func determineComment(file string) string {
 	}
 }
 
-func readFile(file, start, end string) string {
+func ReadFile(file, start, end string) string {
 
 	content, _ := os.Open(file)
 
@@ -94,21 +79,9 @@ func readFile(file, start, end string) string {
 	return selected
 }
 
-func (c CodeBlock) GetLang() string {
-	return c.lang
-}
+func (c CodeBlock) FormatBlockOutput(w int) string {
 
-func (c CodeBlock) GetComment() string {
-	return c.comment
-}
-
-func (c CodeBlock) GetCode() string {
-	return c.code
-}
-
-func (c CodeBlock) FormatBlock() string {
-
-	var lines = strings.Split(string(c.code), "\n")
+	var lines = strings.Split(string(c.Block), "\n")
 	const maxOutput = 25
 
 	var formatted string
@@ -117,8 +90,8 @@ func (c CodeBlock) FormatBlock() string {
 			formatted += "..."
 			break
 		}
-		if len(lines[i]) > 40 {
-			formatted += string(lines[i][:40]) + "...\n"
+		if len(lines[i]) > w {
+			formatted += string(lines[i][:w]) + "...\n"
 		} else {
 			formatted += string(lines[i]) + "\n"
 		}

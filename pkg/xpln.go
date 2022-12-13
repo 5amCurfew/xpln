@@ -11,25 +11,36 @@ import (
 )
 
 // ///////////////////////////////////////////
-// Read Code Block from file
+// Create Code Block from file
 // ///////////////////////////////////////////
-func CreateCodeBlock(file, start, end string) (util.CodeBlock, error) {
-	return util.NewCodeBlock(file, start, end)
+func CreateCodeBlock(f, s, e string) (util.CodeBlock, error) {
+	_, err := os.Open(f)
+
+	if err != nil {
+		return util.CodeBlock{}, err
+	}
+
+	return util.CodeBlock{
+		File:    f,
+		Lang:    util.DetermineLang(f),
+		Comment: util.DetermineComment(f),
+		Block:   util.ReadFile(f, s, e),
+	}, nil
 }
 
 // ///////////////////////////////////////////
 // Parse Code Block to OpenAI API
 // ///////////////////////////////////////////
-func ExplainCodeBlock(block util.CodeBlock) (string, error) {
+func ExplainCodeBlock(cb util.CodeBlock) (string, error) {
 	godotenv.Load()
 
 	openAPIKey := os.Getenv("OPENAI_API_KEY")
 	ctx := context.Background()
 	client := gpt3.NewClient(openAPIKey)
 
-	var prefix = block.GetComment() + " " + block.GetLang() + " application\n"
-	var suffix = "\n" + block.GetComment() + " Explain what the the application is doing:\n" + block.GetComment() + " 1."
-	prompt := prefix + block.GetCode() + suffix
+	var prefix = cb.Comment + " " + cb.Lang + " application\n"
+	var suffix = "\n" + cb.Comment + " Explain what the the application is doing:\n" + cb.Comment + " 1."
+	prompt := prefix + cb.Block + suffix
 
 	resp, err := client.Completion(ctx, gpt3.CompletionRequest{
 		Prompt:           []string{prompt},
@@ -43,5 +54,5 @@ func ExplainCodeBlock(block util.CodeBlock) (string, error) {
 		return "GPT-3 Completion Error", err
 	}
 
-	return strings.Replace(string(block.GetComment()+" 1."+resp.Choices[0].Text), block.GetComment()+" ", "", -1), nil
+	return strings.Replace(string(cb.Comment+" 1."+resp.Choices[0].Text), cb.Comment+" ", "", -1), nil
 }

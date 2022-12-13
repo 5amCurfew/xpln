@@ -57,7 +57,7 @@ var rootCmd = &cobra.Command{
 				os.Exit(1)
 			}
 
-			panel1 := pterm.DefaultBox.WithTitle(pterm.LightWhite("Code Block")).Sprint(pterm.LightWhite(block.FormatBlock()))
+			panel1 := pterm.DefaultBox.WithTitle(pterm.LightWhite("Code Block")).Sprint(pterm.LightWhite(block.FormatBlockOutput(45)))
 			panel2 := pterm.DefaultBox.WithTitle(pterm.Cyan("Explained")).Sprint(pterm.Cyan(explained))
 
 			panels, _ := pterm.DefaultPanel.WithPanels(pterm.Panels{
