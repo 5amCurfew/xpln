@@ -16,9 +16,7 @@
 git clone git@github.com:5amCurfew/xpln.git
 ```
 
-Ensure you have Go (version 1.19) installed and an @OpenAI API token (refer to beta.openai.com)
-
-Rename the `.env.template` to `.env` and set the `OPENAI_API_KEY` variable to your token
+Ensure you have Go (version 1.19) installed and an @OpenAI API token (refer to beta.openai.com) and the variable `OPENAI_API_KEY` set to your token in your shell
 
 Build the binary the current directory using `go build` (can then be found using `./xpln`)
 

@@ -7,7 +7,6 @@ import (
 
 	util "github.com/5amCurfew/xpln/util"
 	"github.com/PullRequestInc/go-gpt3"
-	"github.com/joho/godotenv"
 	"github.com/mitchellh/go-wordwrap"
 )
 
@@ -33,7 +32,6 @@ func CreateCodeBlock(f, s, e string) (util.CodeBlock, error) {
 // Parse Code Block to OpenAI API
 // ///////////////////////////////////////////
 func ExplainCodeBlock(cb util.CodeBlock) (string, error) {
-	godotenv.Load()
 
 	openAPIKey := os.Getenv("OPENAI_API_KEY")
 	ctx := context.Background()
