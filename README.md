@@ -30,7 +30,7 @@ TODO: publish to Homebrew
 ./xpln <PATH_TO_FILE> [OPTIONAL] --lines start-end
 ```
 
-`xpln` requires the relative file path the only argument. Optional flags include `--lines` (`-l`) that takes a string with the format `start-end` (inclusive, e.g. `5-12` will read from line 5 up-to-and-including line 12)
+`xpln` requires the relative file path as the only argument. Optional flags include `--lines` (`-l`) that takes a string with the format `start-end` (inclusive, e.g. `5-12` will read from line 5 up-to-and-including line 12)
 
 If no lines are provided `xpln` will read the entire file
 
