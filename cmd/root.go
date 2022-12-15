@@ -61,7 +61,7 @@ var rootCmd = &cobra.Command{
 			panel1 := pterm.DefaultBox.WithTitle(
 				pterm.LightWhite("Code Block")).Sprint(pterm.LightWhite(block.FormatBlockOutput(outputWidth)))
 			panel2 := pterm.DefaultBox.WithTitle(
-				pterm.Cyan("Explained")).Sprint(pterm.Cyan(xpln.FormatExplained(explained, outputWidth)))
+				pterm.Cyan("Explained")).Sprint(pterm.Cyan(xpln.Wrap(explained, outputWidth)))
 
 			panels, _ := pterm.DefaultPanel.WithPanels(pterm.Panels{
 				{{Data: panel1}, {Data: panel2}},
@@ -76,6 +76,7 @@ var rootCmd = &cobra.Command{
 
 func Execute() {
 	rootCmd.PersistentFlags().StringP("lines", "l", "", "Declare the lines of the code block (start-end e.g. 5-10)")
+	rootCmd.PersistentFlags().StringP("to", "t", "", "Declare the target language of translation")
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Fprintf(os.Stderr, "error using xpln: '%s'", err)

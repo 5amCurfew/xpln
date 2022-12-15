@@ -2,6 +2,7 @@ package xpln
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"strings"
 
@@ -29,7 +30,7 @@ func CreateCodeBlock(f, s, e string) (util.CodeBlock, error) {
 }
 
 // ///////////////////////////////////////////
-// Parse Code Block to OpenAI API
+// Parse Code Block to OpenAI API (explain)
 // ///////////////////////////////////////////
 func ExplainCodeBlock(cb util.CodeBlock) (string, error) {
 
@@ -56,6 +57,35 @@ func ExplainCodeBlock(cb util.CodeBlock) (string, error) {
 	return strings.Replace(string(cb.Comment+" 1."+resp.Choices[0].Text), cb.Comment+" ", "", -1), nil
 }
 
-func FormatExplained(e string, w int) string {
+// ///////////////////////////////////////////
+// Parse Code Block to OpenAI API (translate)
+// ///////////////////////////////////////////
+func TranslateCodeBlock(cb util.CodeBlock, translateTo string) (string, error) {
+
+	openAPIKey := os.Getenv("OPENAI_API_KEY")
+	ctx := context.Background()
+	client := gpt3.NewClient(openAPIKey)
+
+	var prefix = cb.Comment + " Translate this function from " + cb.Lang + " to " + translateTo + "\n" + cb.Comment + " " + cb.Lang + "\n"
+	var suffix = cb.Comment + " End\n\n" + cb.Comment + " " + translateTo + "\n"
+	prompt := prefix + cb.Block + suffix
+	fmt.Println(prompt)
+
+	resp, err := client.Completion(ctx, gpt3.CompletionRequest{
+		Prompt:           []string{prompt},
+		MaxTokens:        gpt3.IntPtr(128),
+		TopP:             gpt3.Float32Ptr(1),
+		Stop:             []string{cb.Comment + "\n"},
+		FrequencyPenalty: 0.0,
+	})
+
+	if err != nil {
+		return "GPT-3 Completion Error", err
+	}
+
+	return string(resp.Choices[0].Text), nil
+}
+
+func Wrap(e string, w int) string {
 	return wordwrap.WrapString(e, uint(w))
 }
