@@ -1,43 +1,35 @@
-import singer
-from signal_transformers.transform_runner import LOGGER, BaseSingerMessageTransformer
-from singer import utils
+def process_records(stream, mdata, max_modified, records, filter_field, fks):
+    schema = stream.schema.to_dict()
+    with metrics.record_counter(stream.tap_stream_id) as counter:
+        for record in records:
+            record_flat = {
+                'id': record['id']
+            }
+            for prop, value in record['attributes'].items():
+                if prop == 'id':
+                    raise Exception(
+                        'Error flattening Outeach record - conflict with `id` key')
+                record_flat[prop] = value
 
-FULL_TABLE = "FULL_TABLE"
+            if 'relationships' in record:
+                for prop, value in record['relationships'].items():
+                    if 'data' not in value and 'links' not in value:
+                        raise Exception(
+                            'Only `data` or `links` expected in relationships')
 
+                    fk_field_name = '{}Id'.format(prop)
 
-class AddFullRefreshLoadDateSingerTransformer(BaseSingerMessageTransformer):
-    def __init__(self, *args, **kwargs):
-        self.full_table_load_at = utils.strftime(utils.now())
-        super().__init__(*args, **kwargs)
+                    if 'data' in value and fk_field_name in fks:
+                        data_value = value['data']
+                        if data_value is not None and 'id' not in data_value:
+                            raise Exception(
+                                'null or `id` field expected for `data` relationship')
 
-        if not self.tap_config:
-            LOGGER.warning(
-                "No tap config provided to add-full-refresh-load-date transformer. No transformations applied"
-            )
+                        if fk_field_name in record_flat:
+                            raise Exception(
+                                '`{}` exists as both an attribute and generated relationship name'.format(fk_field_name))
 
-    def _do_schema_transform(self, message: singer.SchemaMessage) -> list[singer.SchemaMessage]:
-        """Adds full_table_load_at to Singer schemas"""
-        message.schema["properties"]["_sdc_full_table_load_at"] = {
-            "type": ["null", "string"],
-            "format": "date-time",
-        }
-        return [message]
-
-    def _do_record_transform(self, message: singer.RecordMessage) -> list[singer.RecordMessage]:
-        """Adds full_table_load_at to Singer records"""
-        message.record["_sdc_full_table_load_at"] = self.full_table_load_at
-        return [message]
-
-    def transform(self, message: singer.Message) -> list[singer.Message]:
-        if (
-            self.tap_config
-            and self.tap_config.get("default_replication_method") == FULL_TABLE
-            # if default_replication_method is not defined, assume we're conditionally adding the transformer based on the run
-            or not self.tap_config.get("default_replication_method")
-        ):
-            if isinstance(message, singer.RecordMessage):
-                return self._do_record_transform(message)
-            elif isinstance(message, singer.SchemaMessage):
-                return self._do_schema_transform(message)
-
-        return [message]
+                        if data_value == None:
+                            record_flat[fk_field_name] = None
+                        else:
+                            record_flat[fk_field_name] = data_value['id']
