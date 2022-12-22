@@ -19,7 +19,7 @@ universal_binaries:
 
 brews:
   -
-    name: mediumautopost
+    name: xpln
     homepage: "https://github.com/5amCurfew/xpln"
     tap:
       owner: 5amCurfew
