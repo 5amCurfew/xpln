@@ -22,10 +22,8 @@ Build the binary the current directory using `go build` (can then be found using
 
 ### Global
 
-v1.0 
-
 ```bash
-brew install 5amCurfew/xpln
+brew install 5amCurfew/5amCurfew/xpln
 ```
 
 ## Usage
