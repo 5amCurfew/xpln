@@ -24,6 +24,7 @@ Build the binary the current directory using `go build` (can then be found using
 Ensure you have the environment variable OPENAI_API_KEY set to your @OpenAI API token in your shell
 
 ```bash
+brew tap 5amCurfew/5amCurfew
 brew install 5amCurfew/5amCurfew/xpln
 ```
 
