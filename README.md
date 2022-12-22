@@ -22,7 +22,9 @@ Build the binary the current directory using `go build` (can then be found using
 
 ### Global
 
-TODO: publish to Homebrew
+```bash
+brew install 5amCurfew/xpln
+```
 
 ## Usage
 
