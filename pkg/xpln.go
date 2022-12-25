@@ -38,12 +38,12 @@ func ExplainCodeBlock(cb util.CodeBlock) (string, error) {
 	client := gpt3.NewClient(openAPIKey)
 
 	var prefix = cb.Comment + " " + cb.Lang + " application\n"
-	var suffix = "\n" + cb.Comment + " Explain what the application is doing:\n" + cb.Comment + " 1."
+	var suffix = "\n" + cb.Comment + " Here is what the " + cb.Lang + " application is doing:\n" + cb.Comment + " 1."
 	prompt := prefix + cb.Block + suffix
 
 	resp, err := client.Completion(ctx, gpt3.CompletionRequest{
 		Prompt:           []string{prompt},
-		MaxTokens:        gpt3.IntPtr(128),
+		MaxTokens:        gpt3.IntPtr(256),
 		Stop:             []string{"\n\n"},
 		TopP:             gpt3.Float32Ptr(0.05),
 		FrequencyPenalty: 0.8,
@@ -56,6 +56,24 @@ func ExplainCodeBlock(cb util.CodeBlock) (string, error) {
 	return strings.Replace(string(cb.Comment+" 1."+resp.Choices[0].Text), cb.Comment+" ", "", -1), nil
 }
 
-func FormatExplained(e string, w int) string {
-	return wordwrap.WrapString(e, uint(w))
+func Format(e string, w int, limit bool) string {
+
+	var lines = strings.Split(string(e), "\n")
+	const maxOutput = 20
+
+	var formatted string
+	if limit {
+		for i := 0; i < len(lines) && i <= maxOutput; i++ {
+			if i == maxOutput {
+				formatted += "..."
+				break
+			} else {
+				formatted += lines[i] + "\n"
+			}
+		}
+	} else {
+		formatted = e
+	}
+
+	return wordwrap.WrapString(strings.Replace(formatted, "\t", "    ", -1), uint(w))
 }

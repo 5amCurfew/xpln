@@ -55,6 +55,8 @@ func ReadFile(file, start, end string) string {
 	} else if s > len(lines)-1 {
 		fmt.Println("Starting line is greater than file length: Defaulting to line 1")
 		s = 0
+	} else {
+		s = s - 1
 	}
 
 	var e, endNotProvided = strconv.Atoi(end)
@@ -77,25 +79,4 @@ func ReadFile(file, start, end string) string {
 	}
 
 	return selected
-}
-
-func (c CodeBlock) FormatBlockOutput(w int) string {
-
-	var lines = strings.Split(string(c.Block), "\n")
-	const maxOutput = 25
-
-	var formatted string
-	for i := 0; i < len(lines) && i <= maxOutput; i++ {
-		if i == maxOutput {
-			formatted += "..."
-			break
-		}
-		if len(lines[i]) > w {
-			formatted += string(lines[i][:w]) + "...\n"
-		} else {
-			formatted += string(lines[i]) + "\n"
-		}
-	}
-
-	return formatted
 }
