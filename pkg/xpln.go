@@ -21,17 +21,18 @@ func CreateCodeBlock(f, s, e string) (util.CodeBlock, error) {
 	}
 
 	return util.CodeBlock{
-		File:    f,
-		Lang:    util.DetermineLang(f),
-		Comment: util.DetermineComment(f),
-		Block:   util.ReadFile(f, s, e),
+		File:      f,
+		Lang:      util.DetermineLang(f),
+		Comment:   util.DetermineComment(f),
+		Block:     util.ReadFile(f, s, e),
+		Explained: "",
 	}, nil
 }
 
 // ///////////////////////////////////////////
 // Parse Code Block to OpenAI API
 // ///////////////////////////////////////////
-func ExplainCodeBlock(cb util.CodeBlock) (string, error) {
+func ExplainCodeBlock(cb *util.CodeBlock) (string, error) {
 
 	openAPIKey := os.Getenv("OPENAI_API_KEY")
 	ctx := context.Background()
@@ -50,10 +51,13 @@ func ExplainCodeBlock(cb util.CodeBlock) (string, error) {
 	})
 
 	if err != nil {
+		cb.Explained = "Error at GPT-3 request..."
 		return "GPT-3 Completion Error", err
 	}
 
-	return strings.Replace(string(cb.Comment+" 1."+resp.Choices[0].Text), cb.Comment+" ", "", -1), nil
+	cb.Explained = strings.Replace(string(cb.Comment+" 1."+resp.Choices[0].Text), cb.Comment+" ", "", -1)
+
+	return cb.Explained, nil
 }
 
 func Format(e string, w int, limit bool) string {

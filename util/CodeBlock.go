@@ -9,10 +9,11 @@ import (
 )
 
 type CodeBlock struct {
-	File    string
-	Lang    string
-	Comment string
-	Block   string
+	File      string
+	Lang      string
+	Comment   string
+	Block     string
+	Explained string
 }
 
 func DetermineLang(file string) string {

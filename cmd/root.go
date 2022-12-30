@@ -51,7 +51,7 @@ var rootCmd = &cobra.Command{
 			spinner.Fail("Failed xpln'ing! (" + err.Error() + ")")
 			os.Exit(1)
 		} else {
-			var explained, err = xpln.ExplainCodeBlock(block)
+			var explained, err = xpln.ExplainCodeBlock(&block)
 
 			if err != nil {
 				spinner.Fail("Failed xpln'ing! (" + err.Error() + ")")
