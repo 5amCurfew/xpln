@@ -1,9 +1,9 @@
 ```
- __  __     ______   __         __   __    
-/\_\_\_\   /\  == \ /\ \       /\ "-.\ \   
-\/_/\_\/_  \ \  _-/ \ \ \____  \ \ \-.  \  
-  /\_\/\_\  \ \_\    \ \_____\  \ \_\\"\_\ 
-  \/_/\/_/   \/_/     \/_____/   \/_/ \/_/      
+ __  __     ______   __         __   __
+/\_\_\_\   /\  == \ /\ \       /\ "-.\ \
+\/_/\_\/_  \ \  _-/ \ \ \____  \ \ \-.  \
+  /\_\/\_\  \ \_\    \ \_____\  \ \_\\"\_\
+  \/_/\/_/   \/_/     \/_____/   \/_/ \/_/
 ```
 
 `xpln` is a command line interface to explain blocks of code using @OpenAI's GPT-3 model built using Go and the @spf13's Cobra library.
@@ -20,7 +20,24 @@ Ensure you have Go (version 1.19) installed and an @OpenAI API token (refer to b
 
 Build the binary the current directory using `go build` (can then be found using `./xpln`)
 
+Note using `vendor` directory for external packages:
+
+```bash
+go help build
+...
+
+-mod mode
+                module download mode to use: readonly, vendor, or mod.
+                By default, if a vendor directory is present and the go version in go.mod
+                is 1.14 or higher, the go command acts as if -mod=vendor were set.
+                Otherwise, the go command acts as if -mod=readonly were set.
+                See https://golang.org/ref/mod#build-commands for details.
+
+...
+```
+
 ### Global
+
 Ensure you have the environment variable OPENAI_API_KEY set to your @OpenAI API token in your shell
 
 ```bash
@@ -43,6 +60,7 @@ See `xpln --help` for more details
 ## Example
 
 Explain the `example.js` file in the repository
+
 ```
 ./xpln example.js
  ✓  Xpln'd
@@ -68,7 +86,7 @@ Explain the `example.js` file in the repository
 | |                                             |                                                                              |
 | └─────────────────────────────────────────────┘                                                                              |
 |                                                                                                                              |
-└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘ 
+└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ## License
